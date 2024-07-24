@@ -6,6 +6,7 @@ class NewsService {
   const NewsService({required this.repository});
 
   Future<List<ArticleModel>> getTopHeadlinesUkraine() {
+    // TODO: cache
     return repository.getTopHeadlinesUkraine();
   }
 }
