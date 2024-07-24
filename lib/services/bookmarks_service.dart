@@ -5,8 +5,8 @@ class BookMarksService {
   final LocalStorageRepoInterface localStorage;
   BookMarksService({required this.localStorage});
 
-  void addBookmark(String url, ArticleModel article) {
-    localStorage.addBookmark(url, article);
+  void addBookmark(ArticleModel article) {
+    localStorage.addBookmark(article);
   }
 
   void removeBookmark(String url) {
@@ -17,7 +17,7 @@ class BookMarksService {
     return localStorage.isBookmarked(url);
   }
 
-  Map<String, ArticleModel> listBookmarks() {
+  Map<dynamic, ArticleModel> listBookmarks() {
     return localStorage.listBookmarks();
   }
 }

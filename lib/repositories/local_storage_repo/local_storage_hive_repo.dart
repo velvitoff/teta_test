@@ -15,30 +15,33 @@ class LocalStorageHiveRepo implements LocalStorageRepoInterface {
   }
 
   @override
-  void addBookmark(String url, ArticleModel article) {
-    bookmarkBox.put(url, jsonEncode(article.toJson()));
+  void addBookmark(ArticleModel article) {
+    bookmarkBox.add(jsonEncode(article.toJson()));
   }
 
   @override
   void removeBookmark(String url) {
-    bookmarkBox.delete(url);
+    final key = bookmarkBox.keys
+        .where((key) =>
+            ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)).url == url)
+        .firstOrNull;
+    if (key == null) return;
+    bookmarkBox.delete(key);
   }
 
   @override
   bool isBookmarked(String url) {
-    final res = bookmarkBox.get(url);
-    return res != null;
+    final key = bookmarkBox.keys
+        .where((key) =>
+            ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)).url == url)
+        .firstOrNull;
+    return key != null;
   }
 
   @override
-  Map<String, ArticleModel> listBookmarks() {
-    final res = bookmarkBox.values
-        .map((e) => ArticleModel.fromJson(jsonDecode(e)))
-        .toList();
-    return Map.fromEntries(
-      res.map(
-        (e) => MapEntry(e.url!, e),
-      ),
-    );
+  Map<dynamic, ArticleModel> listBookmarks() {
+    return Map<dynamic, ArticleModel>.fromEntries(bookmarkBox.keys.map((key) =>
+        MapEntry<dynamic, ArticleModel>(
+            key, ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)))));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:teta_test/locator.dart';
+import 'package:provider/provider.dart';
 import 'package:teta_test/models/article_model.dart';
-import 'package:teta_test/services/bookmarks_service.dart';
+import 'package:teta_test/providers/articles_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Article extends StatelessWidget {
@@ -87,6 +87,8 @@ class _ArticleBody extends StatelessWidget {
                   children: [
                     Text(
                       article.title,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
@@ -95,6 +97,8 @@ class _ArticleBody extends StatelessWidget {
                     if (article.source.name != null)
                       Text(
                         article.source.name!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -143,49 +147,21 @@ class _GoToUrlIcon extends StatelessWidget {
   }
 }
 
-class _BookmarkIcon extends StatefulWidget {
+class _BookmarkIcon extends StatelessWidget {
   final ArticleModel article;
   const _BookmarkIcon({required this.article});
 
-  @override
-  State<_BookmarkIcon> createState() => __BookmarkIconState();
-}
-
-class __BookmarkIconState extends State<_BookmarkIcon> {
-  late bool isBookmarked;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.article.url == null) return;
-    isBookmarked =
-        locator.get<BookMarksService>().isBookmarked(widget.article.url!);
-  }
-
-  void onTap() {
-    if (widget.article.url == null) return;
-
-    if (isBookmarked) {
-      locator.get<BookMarksService>().removeBookmark(
-            widget.article.url!,
-          );
-    } else {
-      locator.get<BookMarksService>().addBookmark(
-            widget.article.url!,
-            widget.article,
-          );
-    }
-
-    setState(() {
-      isBookmarked = !isBookmarked;
-    });
+  void onTap(BuildContext context) {
+    if (article.url == null) return;
+    context.read<ArticlesProvider>().switchBookmark(article.url!, article);
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isBookmarked =
+        context.watch<ArticlesProvider>().isBookmarked(article.url!);
     return IconButton(
-      onPressed: onTap,
+      onPressed: () => onTap(context),
       icon: Icon(
         isBookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
       ),
