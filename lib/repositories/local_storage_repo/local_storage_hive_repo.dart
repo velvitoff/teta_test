@@ -14,6 +14,13 @@ class LocalStorageHiveRepo implements LocalStorageRepoInterface {
     return LocalStorageHiveRepo._(bookmarkBox: box);
   }
 
+  ArticleModel? _modelFromKey(dynamic key) {
+    if (key == null) return null;
+    final value = bookmarkBox.get(key);
+    if (value == null) return null;
+    return ArticleModel.fromJson(jsonDecode(value));
+  }
+
   @override
   void addBookmark(ArticleModel article) {
     bookmarkBox.add(jsonEncode(article.toJson()));
@@ -22,8 +29,7 @@ class LocalStorageHiveRepo implements LocalStorageRepoInterface {
   @override
   void removeBookmark(String url) {
     final key = bookmarkBox.keys
-        .where((key) =>
-            ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)).url == url)
+        .where((key) => _modelFromKey(key)!.url == url)
         .firstOrNull;
     if (key == null) return;
     bookmarkBox.delete(key);
@@ -32,16 +38,14 @@ class LocalStorageHiveRepo implements LocalStorageRepoInterface {
   @override
   bool isBookmarked(String url) {
     final key = bookmarkBox.keys
-        .where((key) =>
-            ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)).url == url)
+        .where((key) => _modelFromKey(key)!.url == url)
         .firstOrNull;
     return key != null;
   }
 
   @override
   Map<dynamic, ArticleModel> listBookmarks() {
-    return Map<dynamic, ArticleModel>.fromEntries(bookmarkBox.keys.map((key) =>
-        MapEntry<dynamic, ArticleModel>(
-            key, ArticleModel.fromJson(jsonDecode(bookmarkBox.get(key)!)))));
+    return Map<dynamic, ArticleModel>.fromEntries(bookmarkBox.keys.map(
+        (key) => MapEntry<dynamic, ArticleModel>(key, _modelFromKey(key)!)));
   }
 }
