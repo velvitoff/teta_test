@@ -5,6 +5,6 @@ class BookmarksRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("bookmarks");
+    return const Text("Bookmark");
   }
 }

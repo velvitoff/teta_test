@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:teta_test/app.dart';
+import 'package:teta_test/locator.dart';
 
 void main() {
+  setup();
   runApp(const MyApp());
 }
 
