@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teta_test/models/article_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Article extends StatelessWidget {
   final ArticleModel article;
@@ -67,6 +68,16 @@ class _ArticleHeader extends StatelessWidget {
   final ArticleModel article;
   const _ArticleHeader({required this.article});
 
+  Future<void> goToUrl() async {
+    if (article.url == null) return;
+
+    final uri = Uri.parse(article.url!);
+    if (!await launchUrl(uri)) {
+      // TODO: show dialog
+      print('Could not launch $uri');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -75,20 +86,43 @@ class _ArticleHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            article.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-            ),
-          ),
-          if (article.source.name != null)
-            Text(
-              article.source.name!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    if (article.source.name != null)
+                      Text(
+                        article.source.name!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.bookmark_outline_rounded,
+                ),
+              ),
+              IconButton(
+                  onPressed: goToUrl,
+                  icon: const Icon(
+                    Icons.chevron_right_rounded,
+                  ))
+            ],
+          ),
           if (article.description != null)
             Text(
               article.description!,
