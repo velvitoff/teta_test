@@ -15,13 +15,8 @@ class BookmarksRoute extends StatefulWidget {
 class _BookmarksRouteState extends State<BookmarksRoute> {
   @override
   Widget build(BuildContext context) {
-    final articles =
-        locator.get<BookMarksService>().listBookmarks().values.toList();
-    return ChangeNotifierProvider(
-      create: (context) => ArticlesProvider(articles),
-      child: const Newsfeed(
-        showOnlyBookmarked: true,
-      ),
+    return const Newsfeed(
+      showOnlyBookmarked: true,
     );
   }
 }

@@ -8,17 +8,6 @@ class ArticlesProvider extends ChangeNotifier {
   List<(bool, ArticleModel)> allArticles = [];
   String searchQuery = '';
 
-  ArticlesProvider(List<ArticleModel> articles) {
-    allArticles = articles
-        .map((a) => (
-              a.url == null
-                  ? false
-                  : locator.get<BookMarksService>().isBookmarked(a.url!),
-              a,
-            ))
-        .toList();
-  }
-
   List<ArticleModel> searchArticles({bool showOnlyBookmarked = false}) {
     return allArticles
         .where((item) =>
@@ -53,6 +42,18 @@ class ArticlesProvider extends ChangeNotifier {
 
   void setSearchQuery(String query) {
     searchQuery = query;
+    notifyListeners();
+  }
+
+  void setArticles(List<ArticleModel> articles) {
+    allArticles = articles
+        .map((a) => (
+              a.url == null
+                  ? false
+                  : locator.get<BookMarksService>().isBookmarked(a.url!),
+              a,
+            ))
+        .toList();
     notifyListeners();
   }
 }

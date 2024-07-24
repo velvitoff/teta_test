@@ -25,6 +25,9 @@ class _NewsRouteState extends State<NewsRoute>
   void initState() {
     super.initState();
     articles = locator.get<NewsService>().getTopHeadlinesUkraine();
+    articles.then((value) {
+      context.read<ArticlesProvider>().setArticles(value);
+    });
   }
 
   @override
@@ -41,11 +44,8 @@ class _NewsRouteState extends State<NewsRoute>
           );
         }
         if (snapshot.hasData) {
-          return ChangeNotifierProvider(
-            create: (context) => ArticlesProvider(snapshot.data!),
-            child: const Newsfeed(
-              showOnlyBookmarked: false,
-            ),
+          return const Newsfeed(
+            showOnlyBookmarked: false,
           );
         }
         return const Loading();
