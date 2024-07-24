@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teta_test/routes/bookmarks_route.dart';
-import 'package:teta_test/routes/news_route.dart';
+import 'package:teta_test/routes/bookmarks_route/bookmarks_route.dart';
+import 'package:teta_test/routes/news_route/news_route.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

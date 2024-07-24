@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teta_test/locator.dart';
 import 'package:teta_test/models/article_model.dart';
+import 'package:teta_test/routes/news_route/newsfeed.dart';
 import 'package:teta_test/services/news_service.dart';
 import 'package:teta_test/widgets/loading.dart';
 
@@ -25,14 +26,16 @@ class _NewsRouteState extends State<NewsRoute> {
     return FutureBuilder(
       future: articles,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Container();
-        }
         if (snapshot.hasError) {
           return Center(
             child: Text(
               "Error getting news articles: ${snapshot.error}",
             ),
+          );
+        }
+        if (snapshot.hasData) {
+          return Newsfeed(
+            articles: snapshot.data!,
           );
         }
         return const Loading();

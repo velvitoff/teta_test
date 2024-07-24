@@ -15,7 +15,6 @@ class NewsApiRepo implements NewsRepoInterface {
     });
 
     final response = await http.get(url);
-    print(response.body);
     final json = jsonDecode(response.body);
     return List.from(json['articles'])
         .map((e) => ArticleModel.fromJson(e))

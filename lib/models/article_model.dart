@@ -17,7 +17,7 @@ class SourceModel {
 
 class ArticleModel {
   final SourceModel source;
-  final String author;
+  final String? author;
   final String title;
   final String? description;
   final String? url;
