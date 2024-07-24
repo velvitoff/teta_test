@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:teta_test/locator.dart';
 import 'package:teta_test/models/article_model.dart';
+import 'package:teta_test/services/bookmarks_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Article extends StatelessWidget {
@@ -34,7 +36,7 @@ class Article extends StatelessWidget {
                     ),
                   ),
                 ),
-              _ArticleHeader(article: article),
+              _ArticleBody(article: article),
             ],
           ),
         ),
@@ -64,19 +66,9 @@ class _RoundedNetworkImage extends StatelessWidget {
   }
 }
 
-class _ArticleHeader extends StatelessWidget {
+class _ArticleBody extends StatelessWidget {
   final ArticleModel article;
-  const _ArticleHeader({required this.article});
-
-  Future<void> goToUrl() async {
-    if (article.url == null) return;
-
-    final uri = Uri.parse(article.url!);
-    if (!await launchUrl(uri)) {
-      // TODO: show dialog
-      print('Could not launch $uri');
-    }
-  }
+  const _ArticleBody({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -110,17 +102,8 @@ class _ArticleHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.bookmark_outline_rounded,
-                ),
-              ),
-              IconButton(
-                  onPressed: goToUrl,
-                  icon: const Icon(
-                    Icons.chevron_right_rounded,
-                  ))
+              _BookmarkIcon(article: article),
+              _GoToUrlIcon(url: article.url)
             ],
           ),
           if (article.description != null)
@@ -130,6 +113,81 @@ class _ArticleHeader extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _GoToUrlIcon extends StatelessWidget {
+  final String? url;
+  const _GoToUrlIcon({required this.url});
+
+  Future<void> goToUrl() async {
+    if (url == null) return;
+
+    final uri = Uri.parse(url!);
+    if (!await launchUrl(uri)) {
+      // TODO: show dialog
+      print('Could not launch $uri');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: goToUrl,
+      icon: const Icon(
+        Icons.chevron_right_rounded,
+      ),
+    );
+  }
+}
+
+class _BookmarkIcon extends StatefulWidget {
+  final ArticleModel article;
+  const _BookmarkIcon({required this.article});
+
+  @override
+  State<_BookmarkIcon> createState() => __BookmarkIconState();
+}
+
+class __BookmarkIconState extends State<_BookmarkIcon> {
+  late bool isBookmarked;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.article.url == null) return;
+    isBookmarked =
+        locator.get<BookMarksService>().isBookmarked(widget.article.url!);
+  }
+
+  void onTap() {
+    if (widget.article.url == null) return;
+
+    if (isBookmarked) {
+      locator.get<BookMarksService>().removeBookmark(
+            widget.article.url!,
+          );
+    } else {
+      locator.get<BookMarksService>().addBookmark(
+            widget.article.url!,
+            widget.article,
+          );
+    }
+
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onTap,
+      icon: Icon(
+        isBookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
       ),
     );
   }

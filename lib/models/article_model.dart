@@ -13,6 +13,13 @@ class SourceModel {
       name: json['name'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
 }
 
 class ArticleModel {
@@ -47,5 +54,18 @@ class ArticleModel {
       publishedAt: json['publishedAt'],
       content: json['content'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'source': source.toJson(),
+      'author': author,
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+      'publishedAt': publishedAt,
+      'content': content,
+    };
   }
 }

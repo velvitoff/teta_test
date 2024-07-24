@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:teta_test/app.dart';
 import 'package:teta_test/locator.dart';
 
-void main() {
+Future<void> main() async {
+  await Hive.initFlutter();
   setup();
   runApp(const MyApp());
 }
