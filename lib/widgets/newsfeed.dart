@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:teta_test/models/article_model.dart';
 import 'package:teta_test/providers/articles_provider.dart';
 import 'package:teta_test/widgets/article.dart';
 import 'package:teta_test/widgets/my_search_bar.dart';
@@ -14,8 +15,12 @@ class Newsfeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<ArticlesProvider>();
-    final articles =
-        model.searchArticles(showOnlyBookmarked: showOnlyBookmarked);
+    final List<ArticleModel> articles;
+    if (showOnlyBookmarked) {
+      articles = model.searchLocalArticles();
+    } else {
+      articles = model.searchNetworkArticles();
+    }
 
     void searchCallback(String query) {
       model.setSearchQuery(query);

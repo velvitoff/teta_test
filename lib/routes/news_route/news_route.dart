@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teta_test/locator.dart';
-import 'package:teta_test/models/article_model.dart';
 import 'package:teta_test/providers/articles_provider.dart';
 import 'package:teta_test/widgets/newsfeed.dart';
-import 'package:teta_test/services/news_service.dart';
 import 'package:teta_test/widgets/loading.dart';
 
 class NewsRoute extends StatefulWidget {
@@ -16,7 +13,7 @@ class NewsRoute extends StatefulWidget {
 
 class _NewsRouteState extends State<NewsRoute>
     with AutomaticKeepAliveClientMixin {
-  late final Future<List<ArticleModel>> articles;
+  late final Future<bool> future;
 
   @override
   bool get wantKeepAlive => true;
@@ -24,17 +21,14 @@ class _NewsRouteState extends State<NewsRoute>
   @override
   void initState() {
     super.initState();
-    articles = locator.get<NewsService>().getTopHeadlinesUkraine();
-    articles.then((value) {
-      context.read<ArticlesProvider>().setArticles(value);
-    });
+    future = context.read<ArticlesProvider>().updateNetworkArticles();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return FutureBuilder(
-      future: articles,
+      future: future,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(

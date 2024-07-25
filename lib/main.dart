@@ -6,6 +6,7 @@ import 'package:teta_test/locator.dart';
 Future<void> main() async {
   await Hive.initFlutter();
   setup();
+  await locator.allReady();
   runApp(const MyApp());
 }
 
