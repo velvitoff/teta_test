@@ -14,8 +14,10 @@ class App extends StatelessWidget {
       child: const DefaultTabController(
         length: 2,
         child: Scaffold(
-          body: TabBarView(
-            children: [NewsRoute(), BookmarksRoute()],
+          body: SafeArea(
+            child: TabBarView(
+              children: [NewsRoute(), BookmarksRoute()],
+            ),
           ),
           bottomNavigationBar: TabBar(
             tabs: [
